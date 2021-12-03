@@ -52,7 +52,11 @@ jobs:
         DEVELOPER_PASSWORD_COC_API:  ${{ secrets.DEVELOPER_PASSWORD_COC_API }}
         DISCORD_BOT_TOKEN:  ${{ secrets.DISCORD_BOT_TOKEN }}
 
-    - name: cdk deploy
+    - name: Create empty credentials file
+      run: |
+        touch ~/.aws/credentials
+
+    - name: cdk deploy -v
       run: |
         cdk deploy 
       env:
