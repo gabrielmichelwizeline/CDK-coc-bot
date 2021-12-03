@@ -33,6 +33,7 @@ jobs:
       if: steps.cache-pipenv.outputs.cache-hit != 'true'
       run: |
         pipenv install --deploy --dev
+        pipenv shell
 
     - name: Lint and tests
       run: |
