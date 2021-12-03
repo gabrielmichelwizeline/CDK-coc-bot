@@ -54,6 +54,7 @@ jobs:
 
     - name: Create empty credentials file
       run: |
+        mkdir ~/.aws
         touch ~/.aws/credentials
 
     - name: cdk deploy -v
