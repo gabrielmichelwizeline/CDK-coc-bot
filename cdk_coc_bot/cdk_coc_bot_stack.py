@@ -5,6 +5,7 @@ from aws_cdk import aws_autoscaling as autoscaling
 from aws_cdk import aws_ecs as ecs
 from aws_cdk import aws_ecs_patterns as ecs_patterns
 from aws_cdk import core
+from aws_cdk import aws_elasticloadbalancingv2 as elb
 
 DEVELOPER_EMAIL_COC_API = os.environ.get("DEVELOPER_EMAIL_COC_API") or ""
 DEVELOPER_PASSWORD_COC_API = os.environ.get("DEVELOPER_PASSWORD_COC_API") or ""
@@ -16,10 +17,9 @@ class CdkCocBotStack(core.Stack):
     def __init__(self, scope: core.Construct, construct_id: str, **kwargs) -> None:
         super().__init__(scope, construct_id, **kwargs)
 
-        vpc = ec2.Vpc(self, "VPC", max_azs=1)
-        cluster = ecs.Cluster(self, "coc-bot-cluster", vpc=vpc)
+        vpc = ec2.Vpc(self, 'vpc')
+        cluster = ecs.Cluster(self, "coc-bot-cluster")
 
-        security_group = ec2.SecurityGroup(self, "coc-bot-sg", vpc=vpc)
         auto_scaling_group = autoscaling.AutoScalingGroup(
             self,
             "ASG",
@@ -28,7 +28,6 @@ class CdkCocBotStack(core.Stack):
             machine_image=ecs.EcsOptimizedImage.amazon_linux2(),
             min_capacity=1,
             max_capacity=1,
-            security_group=security_group,
         )
 
         capacity_provider = ecs.AsgCapacityProvider(
