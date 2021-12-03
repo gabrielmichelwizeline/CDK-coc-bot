@@ -6,10 +6,11 @@ from aws_cdk import aws_ecs as ecs
 from aws_cdk import aws_ecs_patterns as ecs_patterns
 from aws_cdk import core
 
-DEVELOPER_EMAIL_COC_API = os.environ.get("DEVELOPER_EMAIL_COC_API")
-DEVELOPER_PASSWORD_COC_API = os.environ.get("DEVELOPER_PASSWORD_COC_API")
-DISCORD_BOT_TOKEN = os.environ.get("DISCORD_BOT_TOKEN")
-DOCKER_IMAGE = os.environ.get("DOCKER_IMAGE")
+DEVELOPER_EMAIL_COC_API = os.environ.get("DEVELOPER_EMAIL_COC_API") or ""
+DEVELOPER_PASSWORD_COC_API = os.environ.get("DEVELOPER_PASSWORD_COC_API") or ""
+DISCORD_BOT_TOKEN = os.environ.get("DISCORD_BOT_TOKEN") or ""
+DOCKER_IMAGE = os.environ.get("DOCKER_IMAGE") or "gabrielmichelwizeline/coc-bot:latest"
+
 
 class CdkCocBotStack(core.Stack):
     def __init__(self, scope: core.Construct, construct_id: str, **kwargs) -> None:
@@ -42,7 +43,7 @@ class CdkCocBotStack(core.Stack):
             memory_limit_mib=128,
             task_image_options=ecs_patterns.ApplicationLoadBalancedTaskImageOptions(
                 image=ecs.ContainerImage.from_registry(DOCKER_IMAGE),
-                secrets={
+                environment={
                     "DEVELOPER_EMAIL_COC_API": DEVELOPER_EMAIL_COC_API,
                     "DEVELOPER_PASSWORD_COC_API": DEVELOPER_PASSWORD_COC_API,
                     "DISCORD_BOT_TOKEN": DISCORD_BOT_TOKEN,
