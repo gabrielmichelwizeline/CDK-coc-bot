@@ -47,7 +47,7 @@ jobs:
       env:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        AWS_REGION:  ${{ secrets.AWS_DEFAULT_REGION }}
+        AWS_DEFAULT_REGION:  ${{ secrets.AWS_DEFAULT_REGION }}
         DEVELOPER_EMAIL_COC_API:  ${{ secrets.DEVELOPER_EMAIL_COC_API }}
         DEVELOPER_PASSWORD_COC_API:  ${{ secrets.DEVELOPER_PASSWORD_COC_API }}
         DISCORD_BOT_TOKEN:  ${{ secrets.DISCORD_BOT_TOKEN }}
@@ -57,13 +57,13 @@ jobs:
         mkdir ~/.aws
         touch ~/.aws/credentials
 
-    - name: cdk deploy -v
+    - name: cdk deploy --require-approval never
       run: |
         cdk deploy 
       env:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        AWS_REGION:  ${{ secrets.AWS_DEFAULT_REGION }}
+        AWS_DEFAULT_REGION:  ${{ secrets.AWS_DEFAULT_REGION }}
         DEVELOPER_EMAIL_COC_API:  ${{ secrets.DEVELOPER_EMAIL_COC_API }}
         DEVELOPER_PASSWORD_COC_API:  ${{ secrets.DEVELOPER_PASSWORD_COC_API }}
         DISCORD_BOT_TOKEN:  ${{ secrets.DISCORD_BOT_TOKEN }}
