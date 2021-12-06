@@ -49,7 +49,6 @@ class CdkCocBotStack(core.Stack):
             task_image_options=ecs_patterns.ApplicationLoadBalancedTaskImageOptions(
                 image=ecs.ContainerImage.from_registry(DOCKER_IMAGE),
                 environment={
-                    "DEVELOPER_EMAIL_COC_API": DEVELOPER_EMAIL_COC_API,
                     "DEVELOPER_PASSWORD_COC_API": DEVELOPER_PASSWORD_COC_API,
                     "DISCORD_BOT_TOKEN": DISCORD_BOT_TOKEN,
                 },
