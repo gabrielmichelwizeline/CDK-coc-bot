@@ -49,4 +49,5 @@ class CdkCocBotStack(core.Stack):
                 },
             ),
             desired_count=1,
+            min_healthy_percent=0
         )
