@@ -4,9 +4,8 @@ import aws_cdk.aws_ec2 as ec2
 from aws_cdk import aws_autoscaling as autoscaling
 from aws_cdk import aws_ecs as ecs
 from aws_cdk import aws_ecs_patterns as ecs_patterns
-from aws_cdk import core
-from aws_cdk import aws_elasticloadbalancingv2 as elb
 from aws_cdk import aws_ssm as ssm
+from aws_cdk import core
 
 DOCKER_IMAGE = os.environ.get("DOCKER_IMAGE") or "gabrielmichelwizeline/coc-bot:latest"
 
