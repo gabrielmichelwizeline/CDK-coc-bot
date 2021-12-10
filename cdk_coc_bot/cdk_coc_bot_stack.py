@@ -8,9 +8,6 @@ from aws_cdk import core
 from aws_cdk import aws_elasticloadbalancingv2 as elb
 from aws_cdk import aws_ssm as ssm
 
-DEVELOPER_EMAIL_COC_API = os.environ.get("DEVELOPER_EMAIL_COC_API") or ""
-DEVELOPER_PASSWORD_COC_API = os.environ.get("DEVELOPER_PASSWORD_COC_API") or ""
-DISCORD_BOT_TOKEN = os.environ.get("DISCORD_BOT_TOKEN") or ""
 DOCKER_IMAGE = os.environ.get("DOCKER_IMAGE") or "gabrielmichelwizeline/coc-bot:latest"
 
 
@@ -18,14 +15,23 @@ class CdkCocBotStack(core.Stack):
     def __init__(self, scope: core.Construct, construct_id: str, **kwargs) -> None:
         super().__init__(scope, construct_id, **kwargs)
 
-        vpc = ec2.Vpc(self, 'vpc')
+        vpc = ec2.Vpc(self, "vpc")
         cluster = ecs.Cluster(self, "coc-bot-cluster")
 
-        param = ssm.StringParameter.from_string_parameter_attributes(self, "MyParameter", parameter_name='DEVELOPER_EMAIL_COC_API')
+        DEVELOPER_EMAIL_COC_API = ssm.StringParameter.from_string_parameter_attributes(
+            self, "DEVELOPER_EMAIL_COC_API", parameter_name="DEVELOPER_EMAIL_COC_API"
+        )
+        DEVELOPER_PASSWORD_COC_API = (
+            ssm.StringParameter.from_string_parameter_attributes(
+                self,
+                "DEVELOPER_PASSWORD_COC_API",
+                parameter_name="DEVELOPER_PASSWORD_COC_API",
+            )
+        )
+        DISCORD_BOT_TOKEN = ssm.StringParameter.from_string_parameter_attributes(
+            self, "DISCORD_BOT_TOKEN", parameter_name="DISCORD_BOT_TOKEN"
+        )
 
-        print((param))
-        a = ecs.Secret.from_ssm_parameter(param)
-        print(a)
         auto_scaling_group = autoscaling.AutoScalingGroup(
             self,
             "ASG",
@@ -41,22 +47,25 @@ class CdkCocBotStack(core.Stack):
         )
         cluster.add_asg_capacity_provider(capacity_provider)
 
-        load_balanced_ecs_service = ecs_patterns.ApplicationLoadBalancedEc2Service(
+        ecs_patterns.ApplicationLoadBalancedEc2Service(
             self,
             "coc-bot-discord-service",
             cluster=cluster,
             memory_limit_mib=128,
             task_image_options=ecs_patterns.ApplicationLoadBalancedTaskImageOptions(
                 image=ecs.ContainerImage.from_registry(DOCKER_IMAGE),
-                environment={
-                    "DEVELOPER_EMAIL_COC_API": DEVELOPER_EMAIL_COC_API,
-                    "DEVELOPER_PASSWORD_COC_API": DEVELOPER_PASSWORD_COC_API,
-                    "DISCORD_BOT_TOKEN": DISCORD_BOT_TOKEN,
-                },
                 secrets={
-                     "DEVELOPER_EMAIL_COC_API": a,
+                    "DEVELOPER_EMAIL_COC_API": ecs.Secret.from_ssm_parameter(
+                        DEVELOPER_EMAIL_COC_API
+                    ),
+                    "DEVELOPER_PASSWORD_COC_API": ecs.Secret.from_ssm_parameter(
+                        DEVELOPER_PASSWORD_COC_API
+                    ),
+                    "DISCORD_BOT_TOKEN": ecs.Secret.from_ssm_parameter(
+                        DISCORD_BOT_TOKEN
+                    ),
                 },
-                family='coc-bot'
+                family="coc-bot",
             ),
             desired_count=1,
             min_healthy_percent=0,
