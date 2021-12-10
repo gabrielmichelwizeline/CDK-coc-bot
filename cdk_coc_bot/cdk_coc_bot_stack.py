@@ -67,6 +67,4 @@ class CdkCocBotStack(core.Stack):
                 family="coc-bot",
             ),
             desired_count=1,
-            min_healthy_percent=0,
-            max_healthy_percent=0
         )
