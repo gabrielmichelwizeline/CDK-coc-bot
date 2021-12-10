@@ -16,7 +16,7 @@ class CdkCocBotStack(core.Stack):
 
         vpc = ec2.Vpc(self, "vpc")
         cluster = ecs.Cluster(self, "coc-bot-cluster", vpc=vpc)
-        health_check = ecs.HealthCheck(self, 'hc', command='[ "CMD-SHELL", "echo Hello" ]')
+        health_check = ecs.HealthCheck(self, command='[ "CMD-SHELL", "echo Hello" ]')
 
         DEVELOPER_EMAIL_COC_API = ssm.StringParameter.from_string_parameter_attributes(
             self, "DEVELOPER_EMAIL_COC_API", parameter_name="DEVELOPER_EMAIL_COC_API"
